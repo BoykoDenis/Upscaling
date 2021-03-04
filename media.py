@@ -44,7 +44,7 @@ class media():
         #into_resolution [360, 360]
 
         # width 2.
-
+        #if content.shape[0] % 2 == 0 and content.shape[1] % 2 == 0:
         if content.shape[0] % into_resolution[0] == 0:
             x = content.shape[0]/into_resolution[0]
             x_padding = 0
@@ -78,3 +78,6 @@ class media():
         content = content.reshape((-1, 3, into_resolution[0], into_resolution[1]))
 
         return content
+
+        #else:
+            #return None

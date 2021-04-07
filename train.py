@@ -22,12 +22,13 @@ def load_data(dataset_size, path, name, transform_train, to_tensor):
     for i in range(1, dataset_size):
 
         loaded_image = Image.open(path + name + ' (' + str( i ) + ').jpg')
-        transformed_image = transform_train(loaded_image)
+        transformed_image = transform_train(loaded_image.convert("L"))
         label = to_tensor(loaded_image)
         loaded_image.close()
 
         data.append(transformed_image)
         labels.append(label)
+        print("data loaded: ", i, " / ", dataset_size, end = "\r")
 
     return [data, labels]
 
@@ -37,21 +38,21 @@ def save_mod(state, path, name):
 
 
 #init
-model_save_path = 'models\\'
-model_name = 'model_t'
-path = 'D:\\Datasets\\upscale\\data\\ready\\'
+model_save_path = 'models/'
+model_name = 'model_t.pth.tar'
+path = 'data/ready/'
 name = 'img'
-dataset_size = 5 #776486
-batch_size = 5
-epochs = 1
-lr = 0.001
+dataset_size = 6000
+batch_size = 3
+epochs = 1000
+lr = 0.0001
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda")
 
 model = Upscale(3, 3).to(device)
 parameters = model.parameters()
-optimizer = torch.optim.SGD( parameters, lr = lr )
-criterion = nn.MSELoss(reduction = 'sum')
+optimizer = torch.optim.Adam( parameters, lr = lr )
+criterion = nn.MSELoss(reduction = "sum")
 
 
 
@@ -64,7 +65,7 @@ to_tensor = transforms.ToTensor()
 #data load
 training_dataset, labels = load_data(dataset_size, path, name, transform_train, to_tensor)
 data_loader = data_into_tensor_dataloader(training_dataset, labels, batch_size)
-
+f = open("log.txt", "w")
 
 for epoch in range(epochs):
 
@@ -85,5 +86,6 @@ for epoch in range(epochs):
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()
-
-        print("epoch: ", epoch, "dataset progress: ", idx, "loss: ",	running_loss/(idx+1), end = "\r")
+        f.write(str(["epoch: ", epoch, "dataset progress: ", idx, "loss: ",	running_loss/(idx+1)])+"\n")
+        #print("epoch: ", epoch, "dataset progress: ", idx, "loss: ",	running_loss/(idx+1), end = "\r")
+f.close()

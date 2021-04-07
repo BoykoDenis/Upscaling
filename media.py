@@ -39,7 +39,7 @@ class media():
 
         return torch.from_numpy(array)
 
-    def cut_the_image(content, into_resolution):
+    def cut_the_image(content, into_resolution, meta = False):
 
         #into_resolution [360, 360]
 
@@ -77,7 +77,21 @@ class media():
         content = np.array(np.split(content, y, axis = 3))
         content = content.reshape((-1, 3, into_resolution[0], into_resolution[1]))
 
-        return content
+        meta_data = [x, y, x_padding, y_padding]
+
+        if meta:
+            return content, meta_data
+
+        else:
+            return content
 
         #else:
             #return None
+
+    def crop_edges(img, x_edge, y_edge, scale = 2):
+
+        y, x, c = img.shape
+        return img[ y_edge*scale:(y - y_edge*scale), x_edge*scale :(x - x_edge*scale), : ]
+
+
+

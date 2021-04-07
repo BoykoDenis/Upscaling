@@ -4,13 +4,12 @@ import matplotlib.pyplot as plt
 from media import media as m
 from PIL import Image
 
-path = 'D:\\Datasets\\upscale\\data\\raw\\'
-save_path = 'D:\\Datasets\\upscale\\data\\ready\\'
-name = 'img'
+path = 'data\\raw\\img'
+save_path = 'data\\ready\\img'
 
-def load_image(path, name, number):
+def load_image(path, number):
 
-    img = Image.open(path + name + ' (' + str( number ) + ').jpg')
+    img = Image.open(path + ' (' + str( number ) + ').jpg')
 
     return img
 
@@ -25,7 +24,7 @@ while True:
         for idx, cut in enumerate( im ):
 
             cut = Image.fromarray(cut)
-            cut.save( save_path + name + ' (' + str(int( idx + control_idx + 1 )) + ').jpg' )
+            cut.save( save_path + ' (' + str(int( idx + control_idx + 1 )) + ').jpg' )
 
             print("loaded: "+ str(int( idx + control_idx + 1 )), end='\r')
 
